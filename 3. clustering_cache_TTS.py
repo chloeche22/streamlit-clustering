@@ -7,7 +7,10 @@
 * 페이지 하단 저작권 표시
 작성: 2025‑06‑28 (수정: Sidebar Markdown 오류 해결)"""
 
-from __future__ import annotations
+"""dashboard_app.py – 최종 버전
+* Streamlit Secrets 사용
+* dotenv 가져오기 및 호출 제거
+"""
 
 import warnings
 warnings.filterwarnings('ignore', message='pandas only supports SQLAlchemy connectable')
@@ -17,9 +20,7 @@ import os
 from datetime import datetime
 from typing import Dict, Tuple, List
 
-# 환경변수: Streamlit Secrets 사용 (환경변수 파일 의존 제거)
-# Ensure to set secrets in .streamlit/secrets.toml or Streamlit Cloud settings
-
+# 환경변수: Streamlit Secrets 사용 (dotenv 제거)
 import pyodbc
 import streamlit as st
 import pandas as pd
