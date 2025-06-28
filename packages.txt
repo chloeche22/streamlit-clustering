@@ -1,0 +1,9 @@
+# Streamlit Cloud용 packages.txt
+# 이 파일을 프로젝트 루트에 저장하세요
+
+# ODBC 드라이버 지원
+unixodbc-dev
+g++
+
+# Microsoft ODBC Driver for SQL Server (Ubuntu용)
+# 이미 Streamlit Cloud에 설치되어 있을 수 있음

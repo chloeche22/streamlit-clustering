@@ -1,0 +1,26 @@
+# Streamlit Cloud용 requirements.txt
+# 이 파일을 프로젝트 루트에 저장하세요
+
+# 핵심 프레임워크
+streamlit>=1.28.0
+
+# 데이터 처리
+pandas>=1.5.0
+numpy>=1.24.0
+
+# 데이터베이스 연결
+pyodbc>=4.0.35
+
+# 시각화
+plotly>=5.15.0
+
+# 머신러닝
+scikit-learn>=1.3.0
+
+# Azure Speech Service (TTS용, 선택사항)
+azure-cognitiveservices-speech>=1.30.0
+
+# 추가 유틸리티 (필요시)
+# sqlalchemy>=2.0.0  # ORM 사용시
+# matplotlib>=3.7.0  # 추가 시각화
+# seaborn>=0.12.0    # 통계 시각화
