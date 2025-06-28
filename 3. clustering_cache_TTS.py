@@ -17,8 +17,8 @@ import os
 from datetime import datetime
 from typing import Dict, Tuple, List
 
-from dotenv import load_dotenv
-load_dotenv()
+# 환경변수: Streamlit Secrets 사용 (환경변수 파일 의존 제거)
+# Ensure to set secrets in .streamlit/secrets.toml or Streamlit Cloud settings
 
 import pyodbc
 import streamlit as st
@@ -255,6 +255,30 @@ def main():
             st.warning(f"TTS 실패: {response.reason}")
     except Exception as e:
         st.warning(f"Azure TTS 처리 중 오류: {e}")
+
+            # PDF 저장 (브라우저 Print)
+    st.subheader("📄 PDF로 저장")
+    st.markdown(
+        """
+        <style>
+          @media print { .no-print { display: none; } }
+        </style>
+        <button class="no-print" onclick="window.print()">이 페이지를 PDF로 저장</button>
+        """,
+        unsafe_allow_html=True
+    )
+
+        # PDF 저장 버튼 (HTML 컴포넌트 사용)
+    import streamlit.components.v1 as components
+    st.subheader("📄 PDF로 저장")
+    components.html(
+        """
+        <button onclick="window.print()" style="padding:8px 16px; font-size:16px; cursor:pointer;">
+            이 페이지를 PDF로 저장
+        </button>
+        """,
+        height=60
+    )
 
     # 페이지 하단 저작권 표시
     st.markdown(
