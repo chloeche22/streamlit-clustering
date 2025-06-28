@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+
+# 환경 설정 파일
+.env
+*.sqlite3
+
+# OS별 무시할 파일
+.DS_Store
+Thumbs.db
+
+# VSCode 설정
+.vscode/
+
+# 로그 및 임시 파일
+*.log
+tmp/
