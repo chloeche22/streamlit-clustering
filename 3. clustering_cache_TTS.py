@@ -1,16 +1,9 @@
 """dashboard_app.py – Streamlit 국회 표결 클러스터링 분석 전문 페이지
 * Analytics 전용: 단일 Analysis 페이지
-* .env 환경변수 적용 (DB, Azure 키)
-* 세부 진행 상태 표시(progress bar & messages)
-* UI 순서: 1.PCA 시각화 → 2.표결 내역 → 3.클러스터 요약 → 4.TTS
-* 사이드바: 해석
-* 페이지 하단 저작권 표시
-작성: 2025‑06‑28 (수정: Sidebar Markdown 오류 해결)"""
-
-"""dashboard_app.py – 최종 버전
-* Streamlit Secrets 사용
-* dotenv 가져오기 및 호출 제거
-"""
+* Streamlit Secrets 사용 (dotenv 제거 완료)
+* .env 관련 import 및 load_dotenv 삭제
+* DB 호출, TTS, PDF 저장, Copyright 포함
+작성: 2025‑06‑28 (최종 수정)"""
 
 import warnings
 warnings.filterwarnings('ignore', message='pandas only supports SQLAlchemy connectable')
@@ -20,7 +13,6 @@ import os
 from datetime import datetime
 from typing import Dict, Tuple, List
 
-# 환경변수: Streamlit Secrets 사용 (dotenv 제거)
 import pyodbc
 import streamlit as st
 import pandas as pd
@@ -32,17 +24,18 @@ from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering, SpectralClu
 from sklearn.mixture import GaussianMixture
 from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_score
+import streamlit.components.v1 as components
 
 # ───────────────────── DB 로드 함수 ───────────────────── #
 
 def get_db_connection() -> pyodbc.Connection | None:
     """환경변수 기반 DB 연결 생성"""
     try:
-        driver = os.getenv('DB_DRIVER', 'ODBC Driver 17 for SQL Server')
-        server = os.getenv('DB_HOST')
-        database = os.getenv('DB_NAME')
-        uid = os.getenv('DB_USER')
-        pwd = os.getenv('DB_PASSWORD')
+        driver = st.secrets['DB_DRIVER']
+        server = st.secrets['DB_HOST']
+        database = st.secrets['DB_NAME']
+        uid = st.secrets['DB_USER']
+        pwd = st.secrets['DB_PASSWORD']
         conn_str = (
             f"DRIVER={{{driver}}};"
             f"SERVER={server};DATABASE={database};"
@@ -168,7 +161,7 @@ def main():
         unsafe_allow_html=False
     )
 
-    # 클러스터링 설정 및 실행
+    # 클러스터 개수 및 실행 버튼
     k = st.slider("클러스터 개수 선택", min_value=2, max_value=6, value=3)
     if not st.button("분석 실행"): return
 
@@ -234,8 +227,8 @@ def main():
     st.subheader("4. 음성 설명 (TTS)")
     try:
         import azure.cognitiveservices.speech as speechsdk
-        speech_key = os.getenv("AZURE_SPEECH_KEY")
-        speech_region = os.getenv("AZURE_SPEECH_REGION", "koreacentral")
+        speech_key = st.secrets['AZURE_SPEECH_KEY']
+        speech_region = st.secrets['AZURE_SPEECH_REGION']
         speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=speech_region)
         speech_config.speech_synthesis_voice_name = "ko-KR-SunHiNeural"
 
@@ -257,24 +250,11 @@ def main():
     except Exception as e:
         st.warning(f"Azure TTS 처리 중 오류: {e}")
 
-            # PDF 저장 (브라우저 Print)
-    st.subheader("📄 PDF로 저장")
-    st.markdown(
-        """
-        <style>
-          @media print { .no-print { display: none; } }
-        </style>
-        <button class="no-print" onclick="window.print()">이 페이지를 PDF로 저장</button>
-        """,
-        unsafe_allow_html=True
-    )
-
-        # PDF 저장 버튼 (HTML 컴포넌트 사용)
-    import streamlit.components.v1 as components
+    # PDF 저장 버튼 (브라우저 Print)
     st.subheader("📄 PDF로 저장")
     components.html(
         """
-        <button onclick="window.print()" style="padding:8px 16px; font-size:16px; cursor:pointer;">
+        <button onclick="window.print()" style="padding:8px 16px; font-size:16px; cursor:pointer;" class="no-print">
             이 페이지를 PDF로 저장
         </button>
         """,
