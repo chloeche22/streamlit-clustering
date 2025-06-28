@@ -9,7 +9,9 @@ import warnings
 warnings.filterwarnings('ignore', message='pandas only supports SQLAlchemy connectable')
 warnings.filterwarnings('ignore', message='Graph is not fully connected*')
 
+# dotenv 관련 임포트 제거 - Streamlit Secrets 사용
 import os
+
 from datetime import datetime
 from typing import Dict, Tuple, List
 
